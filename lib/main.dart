@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
               '/notifications': (context) => const OurAiPage(),
             },
             initialRoute: '/',
+            themeMode: ThemeMode.system,
           );
         },
       );

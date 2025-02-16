@@ -1,3 +1,6 @@
+import 'package:animate_do/animate_do.dart';
+import 'package:app/models/tab_bar.model.dart';
+import 'package:app/views/home/details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/models/favorites_model.dart';
@@ -18,6 +21,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
     final favoritesModel = Provider.of<FavoritesModel>(context);
+    var size = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -26,7 +31,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
         scaffoldKey: _scaffoldKey,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
         child: favoritesModel.favorites.isEmpty
             ? const Center(
                 child: AppText(
@@ -36,26 +41,84 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   fontWeight: FontWeight.w500,
                 ),
               )
-            : ListView.builder(
-                itemCount: favoritesModel.favorites.length,
-                itemBuilder: (context, index) {
-                  final item = favoritesModel.favorites[index];
-                  return ListTile(
-                    leading: Image.asset(item.image),
-                    title: AppText(
-                      text: item.title,
-                      size: 18,
-                      color: Theme.of(context).textTheme.titleMedium!.color,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    subtitle: AppText(
-                      text: item.location,
-                      size: 14,
-                      color: Theme.of(context).textTheme.titleSmall!.color,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  );
-                },
+            : FadeInUp(
+                delay: const Duration(milliseconds: 1100),
+                child: ListView.builder(
+                  itemCount: favoritesModel.favorites.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    DataModel current = favoritesModel.favorites[index];
+                    return GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailsPage(
+                            personData: current,
+                            tabData: null,
+                            isCameFromPersonSection: true,
+                          ),
+                        ),
+                      ),
+                      child: Container(
+                        margin: const EdgeInsets.all(8.0),
+                        width: size.width,
+                        height: size.height * 0.15,
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: theme.cardColor,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Hero(
+                              tag: current.year,
+                              child: Container(
+                                margin: const EdgeInsets.all(8.0),
+                                width: size.width * 0.28,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      current.image,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: size.width * 0.05),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: size.height * 0.035,
+                                  ),
+                                  AppText(
+                                    text: current.title,
+                                    size: 20,
+                                    color: theme.textTheme.titleLarge!.color,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.005,
+                                  ),
+                                  AppText(
+                                    text: current.location,
+                                    size: 16,
+                                    color: theme.textTheme.labelSmall!.color,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
       ),
     );

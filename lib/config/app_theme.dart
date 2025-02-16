@@ -4,6 +4,7 @@ import 'package:app/config/size_config.dart';
 final width = SizeConfig.screenW;
 
 ThemeData darkTheme = ThemeData(
+  brightness: Brightness.dark,
   scaffoldBackgroundColor: Colors.grey.shade900,
   primaryColor: Colors.black,
   colorScheme: const ColorScheme.dark(),
@@ -29,11 +30,11 @@ ThemeData darkTheme = ThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      minimumSize: Size(0, 0),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       shape: const RoundedRectangleBorder(
         side: BorderSide(
           width: 2,
-          color: Colors.black,
+          color: Colors.white,
         ),
         borderRadius: BorderRadius.all(
           Radius.circular(10.0),
@@ -44,6 +45,7 @@ ThemeData darkTheme = ThemeData(
 );
 
 ThemeData lightTheme = ThemeData(
+  brightness: Brightness.light,
   scaffoldBackgroundColor: Colors.white,
   primaryColor: Colors.white,
   colorScheme: const ColorScheme.light(),

@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/drawer/custom_drawer.dart';
+import 'package:flutter/services.dart';
 
 import '../../models/tab_bar.model.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -46,6 +47,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     var size = MediaQuery.of(context).size;
 
     final theme = Theme.of(context);
+
+    final brightness = Theme.of(context).brightness;
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor:
+          brightness == Brightness.light ? Colors.white : Colors.black,
+      statusBarIconBrightness:
+          brightness == Brightness.light ? Brightness.dark : Brightness.light,
+    ));
 
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
