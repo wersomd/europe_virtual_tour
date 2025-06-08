@@ -18,33 +18,28 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => FavoritesModel()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-        create: (context) => ThemeProvider(),
-        builder: (context, _) {
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => FavoritesModel()),
+      ],
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
           return MaterialApp(
             title: "Тур по Европе",
             debugShowCheckedModeBanner: false,
-            theme: Provider.of<ThemeProvider>(context).themeData,
+            theme: themeProvider.themeData,
             routes: {
               '/': (context) => const FirebaseStream(),
-              '/home': (context) => MainWrapper(
-                    selectedIndex: 0,
-                  ),
+              '/home': (context) => MainWrapper(selectedIndex: 0),
               '/profile': (context) => const ProfilePage(),
               '/login': (context) => const SignInPage(),
               '/signup': (context) => const SignUpPage(),
@@ -56,5 +51,7 @@ class MyApp extends StatelessWidget {
             themeMode: ThemeMode.system,
           );
         },
-      );
+      ),
+    );
+  }
 }

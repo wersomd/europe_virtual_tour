@@ -17,17 +17,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isLightTheme = !Provider.of<ThemeProvider>(context).isDarkMode;
 
     return FadeInUp(
       child: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: isLightTheme ? Colors.white : Colors.transparent,
+        elevation: isLightTheme ? 1 : 0,
         centerTitle: true,
         title: Text(
           'Europe Virtual Tour',
           style: TextStyle(
             fontSize: 20,
-            color: theme.textTheme.bodyLarge!.color,
+            color: isLightTheme ? Colors.black : theme.textTheme.bodyLarge!.color,
             letterSpacing: 0.53,
             fontWeight: FontWeight.bold,
           ),
@@ -42,7 +43,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
           icon: Icon(
             Icons.subject,
-            color: theme.appBarTheme.iconTheme?.color,
+            color: isLightTheme ? Colors.black : theme.appBarTheme.iconTheme?.color,
             size: 34,
           ),
         ),
@@ -55,6 +56,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               builder: (context, themeProvider, child) {
                 return Icon(
                   themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                  color: isLightTheme ? Colors.black : null,
                 );
               },
             ),

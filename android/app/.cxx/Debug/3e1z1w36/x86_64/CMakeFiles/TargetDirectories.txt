@@ -1,0 +1,2 @@
+D:/Projects/europe_virtual_tour/android/app/.cxx/Debug/3e1z1w36/x86_64/CMakeFiles/edit_cache.dir
+D:/Projects/europe_virtual_tour/android/app/.cxx/Debug/3e1z1w36/x86_64/CMakeFiles/rebuild_cache.dir

@@ -65,230 +65,198 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/home');
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: 20,
-            color: theme.iconTheme.color,
-          ),
-        ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 0,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Column(
-                    children: [
-                      FadeInRight(
-                        child: Text(
-                          "Войти",
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: theme.textTheme.titleMedium!.color,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: <Widget>[
-                          FadeInUp(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                const Text(
-                                  "Email",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                TextField(
-                                  controller: _mailController,
-                                  decoration: const InputDecoration(
-                                    hintText: "account@gmail.com",
-                                    prefixIcon: Icon(
-                                      Icons.mail,
-                                      color: Colors.deepPurpleAccent,
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: 0,
-                                      horizontal: 10,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey),
-                                    ),
-                                  ),
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.deny(
-                                        RegExp('[\\ ]')),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 30,
-                                ),
-                              ],
-                            ),
-                          ),
-                          FadeInDown(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                const Text(
-                                  "Пароль",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                TextFormField(
-                                  controller: _passwordController,
-                                  obscureText: _obscurePass,
-                                  decoration: InputDecoration(
-                                    hintText: "*******",
-                                    prefixIcon: const Icon(
-                                      Icons.lock,
-                                      color: Colors.deepPurpleAccent,
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 0,
-                                      horizontal: 10,
-                                    ),
-                                    enabledBorder: const OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey),
-                                    ),
-                                    border: const OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey),
-                                    ),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _obscurePass
-                                            ? Icons.visibility
-                                            : Icons.visibility_off,
-                                      ),
-                                      onPressed: () {
-                                        setState(
-                                          () {
-                                            _obscurePass = !_obscurePass;
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  FadeInUp(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          login();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurpleAccent,
-                          minimumSize: const Size.fromHeight(48),
-                        ),
-                        child: const Text(
-                          "Войти",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                            letterSpacing: 1.2,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // App Icon
                   FadeInDown(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const Text("Нету аккаунта?"),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: theme.primaryColor.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.travel_explore,
+                        size: 50,
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  // Title
+                  FadeInDown(
+                    delay: const Duration(milliseconds: 200),
+                    child: Text(
+                      "Добро пожаловать",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: theme.textTheme.titleLarge?.color,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  FadeInDown(
+                    delay: const Duration(milliseconds: 400),
+                    child: Text(
+                      "Войдите в свой аккаунт",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Login Form
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        // Email Field
+                        FadeInUp(
+                          delay: const Duration(milliseconds: 600),
+                          child: TextFormField(
+                            controller: _mailController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              labelText: "Email",
+                              hintText: "account@gmail.com",
+                              prefixIcon: Icon(Icons.email_outlined, color: theme.primaryColor),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: theme.dividerColor),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: theme.primaryColor),
+                              ),
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.deny(RegExp('[\\ ]')),
+                            ],
                           ),
-                          onPressed: () =>
-                              Navigator.pushNamed(context, '/signup'),
-                          child: const Text(
-                            "Зарегистрироваться",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.deepPurpleAccent,
-                              fontSize: 16,
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Password Field
+                        FadeInUp(
+                          delay: const Duration(milliseconds: 800),
+                          child: TextFormField(
+                            controller: _passwordController,
+                            obscureText: _obscurePass,
+                            decoration: InputDecoration(
+                              labelText: "Пароль",
+                              hintText: "********",
+                              prefixIcon: Icon(Icons.lock_outline, color: theme.primaryColor),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePass ? Icons.visibility : Icons.visibility_off,
+                                  color: theme.iconTheme.color?.withOpacity(0.7),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePass = !_obscurePass;
+                                  });
+                                },
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: theme.dividerColor),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: theme.primaryColor),
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                  )
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Login Button
+                  FadeInUp(
+                    delay: const Duration(milliseconds: 1000),
+                    child: ElevatedButton(
+                      onPressed: login,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.primaryColor,
+                        minimumSize: Size(size.width, 52),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: const Text(
+                        "Войти",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Sign Up Link
+                  FadeInUp(
+                    delay: const Duration(milliseconds: 1200),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Нет аккаунта? ",
+                          style: TextStyle(
+                            color: theme.textTheme.bodyMedium?.color,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pushNamed(context, '/signup'),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: const Size(0, 0),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(
+                            "Зарегистрироваться",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: theme.primaryColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-            FadeInUpBig(
-              child: Container(
-                height: MediaQuery.of(context).size.height / 2,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                  ),
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/notr-dam.webp'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );
