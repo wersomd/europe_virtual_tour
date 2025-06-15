@@ -11,19 +11,31 @@ class FirebaseStream extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        
         if (snapshot.hasError) {
+          debugPrint('Auth state error: ${snapshot.error}');
           return const Scaffold(
             body: Center(
               child: Text('Что-то пошло не так!'),
             ),
           );
-        } else if (snapshot.hasData) {
+        }
+
+        final user = snapshot.data;
+        if (user != null) {
           return MainWrapper(
             selectedIndex: 0,
           );
-        } else {
-          return const WelcomePage();
         }
+        
+        return const WelcomePage();
       },
     );
   }

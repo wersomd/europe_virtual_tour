@@ -16,6 +16,7 @@ class _SignInPageState extends State<SignInPage> {
   final _mailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -31,35 +32,100 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Future<void> login() async {
-    final navigator = Navigator.of(context);
+    if (!mounted) return;
 
     final isValid = _formKey.currentState!.validate();
-    if (!isValid) return;
+    if (!isValid) {
+      print("FORM NOT VALID");
+      return;
+    }
 
-    const mySnackBar = SnackBar(content: Text('Ошибка!'));
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      print("TRY SIGN IN");
+
+      final userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _mailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+
+      final user = userCredential.user;
+      if (user != null) {
+        print("USER LOGGED IN SUCCESS");
+
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(mySnackBar);
-        return;
-      } else {
-        if (!mounted) return;
-        SnackBarService.showSnackBar(
+
+        await SnackBarService.showSnackBar(
           context,
-          'Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку',
+          'Вход выполнен успешно!',
+          false,
+        );
+
+        print("SHOWED SNACKBAR");
+
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/home',
+          (Route<dynamic> route) => false,
+        );
+
+        print("NAVIGATED TO HOME");
+      } else {
+        print("USER NULL");
+        if (!mounted) return;
+        await SnackBarService.showSnackBar(
+          context,
+          'Не удалось авторизоваться. Повторите попытку.',
           true,
         );
-        return;
+      }
+    } on FirebaseAuthException catch (e) {
+      print("FIREBASE ERROR: ${e.code}");
+
+      String errorMessage;
+      switch (e.code) {
+        case 'user-not-found':
+          errorMessage = 'Пользователь с таким email не найден';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Неверный пароль';
+          break;
+        case 'invalid-email':
+          errorMessage = 'Некорректный формат email';
+          break;
+        case 'user-disabled':
+          errorMessage = 'Аккаунт отключен';
+          break;
+        default:
+          errorMessage = 'Ошибка входа: ${e.message ?? 'Неизвестная ошибка'}';
+      }
+
+      if (mounted) {
+        await SnackBarService.showSnackBar(context, errorMessage, true);
+      }
+    } catch (e) {
+      print("UNEXPECTED ERROR: $e");
+
+      if (mounted) {
+        await SnackBarService.showSnackBar(
+          context,
+          'Произошла непредвиденная ошибка. Попробуйте позже.',
+          true,
+        );
+      }
+    } finally {
+      print("LOGIN FINISHED");
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
-
-    navigator.pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
   }
 
   @override
@@ -81,7 +147,6 @@ class _SignInPageState extends State<SignInPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // App Icon
                   FadeInDown(
                     child: Container(
                       width: 100,
@@ -98,8 +163,6 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  
-                  // Title
                   FadeInDown(
                     delay: const Duration(milliseconds: 200),
                     child: Text(
@@ -118,18 +181,16 @@ class _SignInPageState extends State<SignInPage> {
                       "Войдите в свой аккаунт",
                       style: TextStyle(
                         fontSize: 16,
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
                       ),
                     ),
                   ),
                   const SizedBox(height: 32),
-
-                  // Login Form
                   Form(
                     key: _formKey,
                     child: Column(
                       children: [
-                        // Email Field
                         FadeInUp(
                           delay: const Duration(milliseconds: 600),
                           child: TextFormField(
@@ -138,17 +199,20 @@ class _SignInPageState extends State<SignInPage> {
                             decoration: InputDecoration(
                               labelText: "Email",
                               hintText: "account@gmail.com",
-                              prefixIcon: Icon(Icons.email_outlined, color: theme.primaryColor),
+                              prefixIcon: Icon(Icons.email_outlined,
+                                  color: theme.primaryColor),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: theme.dividerColor),
+                                borderSide:
+                                    BorderSide(color: theme.dividerColor),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: theme.primaryColor),
+                                borderSide:
+                                    BorderSide(color: theme.primaryColor),
                               ),
                             ),
                             inputFormatters: [
@@ -157,8 +221,6 @@ class _SignInPageState extends State<SignInPage> {
                           ),
                         ),
                         const SizedBox(height: 16),
-
-                        // Password Field
                         FadeInUp(
                           delay: const Duration(milliseconds: 800),
                           child: TextFormField(
@@ -167,11 +229,15 @@ class _SignInPageState extends State<SignInPage> {
                             decoration: InputDecoration(
                               labelText: "Пароль",
                               hintText: "********",
-                              prefixIcon: Icon(Icons.lock_outline, color: theme.primaryColor),
+                              prefixIcon: Icon(Icons.lock_outline,
+                                  color: theme.primaryColor),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  _obscurePass ? Icons.visibility : Icons.visibility_off,
-                                  color: theme.iconTheme.color?.withOpacity(0.7),
+                                  _obscurePass
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color:
+                                      theme.iconTheme.color?.withOpacity(0.7),
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -184,11 +250,13 @@ class _SignInPageState extends State<SignInPage> {
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: theme.dividerColor),
+                                borderSide:
+                                    BorderSide(color: theme.dividerColor),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: theme.primaryColor),
+                                borderSide:
+                                    BorderSide(color: theme.primaryColor),
                               ),
                             ),
                           ),
@@ -197,12 +265,10 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                   const SizedBox(height: 24),
-
-                  // Login Button
                   FadeInUp(
                     delay: const Duration(milliseconds: 1000),
                     child: ElevatedButton(
-                      onPressed: login,
+                      onPressed: _isLoading ? null : login,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.primaryColor,
                         minimumSize: Size(size.width, 52),
@@ -211,19 +277,27 @@ class _SignInPageState extends State<SignInPage> {
                         ),
                         elevation: 0,
                       ),
-                      child: const Text(
-                        "Войти",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : const Text(
+                              "Войти",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
                     ),
                   ),
                   const SizedBox(height: 24),
-
-                  // Sign Up Link
                   FadeInUp(
                     delay: const Duration(milliseconds: 1200),
                     child: Row(
@@ -236,7 +310,9 @@ class _SignInPageState extends State<SignInPage> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () => Navigator.pushNamed(context, '/signup'),
+                          onPressed: _isLoading
+                              ? null
+                              : () => Navigator.pushNamed(context, '/signup'),
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
                             minimumSize: const Size(0, 0),

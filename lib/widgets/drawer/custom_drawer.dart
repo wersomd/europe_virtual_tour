@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app/views/wrapper/main_wrapper.dart';
 import 'package:app/widgets/drawer/bottom_user_info.dart';
-import 'package:app/widgets/drawer/custom_list_tile.dart';
-import 'package:app/widgets/drawer/header.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:animate_do/animate_do.dart';
 
@@ -19,7 +17,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final size = MediaQuery.of(context).size;
 
     return SafeArea(
       child: AnimatedContainer(
@@ -58,7 +55,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 ),
               ),
               const SizedBox(height: 30),
-              
+
               // Menu Items
               Expanded(
                 child: ListView(
@@ -104,7 +101,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ],
                 ),
               ),
-              
+
               // Bottom User Info
               if (_isCollapsed) ...[
                 const Divider(),
@@ -122,7 +119,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 },
                 icon: FadeInLeft(
                   child: Icon(
-                    _isCollapsed ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
+                    _isCollapsed
+                        ? Icons.arrow_back_ios
+                        : Icons.arrow_forward_ios,
                     size: 16,
                     color: theme.iconTheme.color?.withOpacity(0.7),
                   ),
@@ -150,14 +149,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
     return FadeInLeft(
       delay: Duration(milliseconds: delay),
       child: ListTile(
-        onTap: onTap ?? () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MainWrapper(selectedIndex: index!),
-            ),
-          );
-        },
+        onTap: onTap ??
+            () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MainWrapper(selectedIndex: index!),
+                ),
+              );
+            },
         minLeadingWidth: 0,
         leading: Icon(
           icon,

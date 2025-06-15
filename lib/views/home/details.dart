@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/views/tours/tour_page.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:app/models/tab_bar.model.dart';
+import 'package:app/widgets/reusable_text.dart';
+import 'package:app/providers/favorites_provider.dart';
 
-import '../../models/tab_bar.model.dart';
-import '../../widgets/reusable_text.dart';
-import '../../models/favorites_model.dart'; // Импортируйте модель избранного
-
-class DetailsPage extends StatefulWidget {
+class DetailsPage extends ConsumerStatefulWidget {
   const DetailsPage({
     super.key,
     required this.tabData,
@@ -20,10 +19,10 @@ class DetailsPage extends StatefulWidget {
   final bool isCameFromPersonSection;
 
   @override
-  State<DetailsPage> createState() => _DetailsPageState();
+  ConsumerState<DetailsPage> createState() => _DetailsPageState();
 }
 
-class _DetailsPageState extends State<DetailsPage> {
+class _DetailsPageState extends ConsumerState<DetailsPage> {
   dynamic current;
 
   @override
@@ -45,8 +44,8 @@ class _DetailsPageState extends State<DetailsPage> {
     var size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
 
-    final favoritesModel = Provider.of<FavoritesModel>(context);
-    bool isFavorite = favoritesModel.isFavorite(current);
+    final favorites = ref.watch(favoritesProvider);
+    bool isFavorite = favorites.contains(current);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -194,13 +193,11 @@ class _DetailsPageState extends State<DetailsPage> {
                               ),
                               child: IconButton(
                                 onPressed: () {
-                                  setState(() {
-                                    if (isFavorite) {
-                                      favoritesModel.remove(current);
-                                    } else {
-                                      favoritesModel.add(current);
-                                    }
-                                  });
+                                  if (isFavorite) {
+                                    ref.read(favoritesProvider.notifier).remove(current);
+                                  } else {
+                                    ref.read(favoritesProvider.notifier).add(current);
+                                  }
                                 },
                                 icon: Icon(
                                   Icons.favorite_border_outlined,
@@ -248,15 +245,18 @@ class _DetailsPageState extends State<DetailsPage> {
                             child: FloatingActionButton(
                               backgroundColor:
                                   const Color.fromARGB(255, 167, 135, 255),
-                              onPressed: () => {
-                                launchUrl(
-                                  Uri.parse(current.ticketUrl),
-                                ),
+                              onPressed: () async {
+                                final Uri url = Uri.parse(current.url);
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(url);
+                                } else {
+                                  throw 'Could not launch $url';
+                                }
                               },
                               child: const Icon(
-                                Icons.add_shopping_cart_outlined,
-                                size: 35,
+                                Icons.arrow_forward,
                                 color: Colors.white,
+                                size: 30,
                               ),
                             ),
                           ),
@@ -273,16 +273,14 @@ class _DetailsPageState extends State<DetailsPage> {
     );
   }
 
-  AppBar _buildAppBar() {
+  PreferredSizeWidget _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
+        onPressed: () => Navigator.pop(context),
         icon: const Icon(
-          Icons.arrow_back_ios_new,
+          Icons.arrow_back_ios,
           color: Colors.white,
         ),
       ),

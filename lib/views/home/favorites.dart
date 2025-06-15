@@ -2,25 +2,24 @@ import 'package:animate_do/animate_do.dart';
 import 'package:app/models/tab_bar.model.dart';
 import 'package:app/views/home/details.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:app/models/favorites_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:app/providers/favorites_provider.dart';
 import 'package:app/widgets/custom_app_bar.dart';
 import 'package:app/widgets/drawer/custom_drawer.dart';
 
-class FavoritesPage extends StatefulWidget {
+class FavoritesPage extends ConsumerStatefulWidget {
   const FavoritesPage({super.key});
 
   @override
-  State<FavoritesPage> createState() => _FavoritesPageState();
+  ConsumerState<FavoritesPage> createState() => _FavoritesPageState();
 }
 
-class _FavoritesPageState extends State<FavoritesPage> {
+class _FavoritesPageState extends ConsumerState<FavoritesPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    final favoritesModel = Provider.of<FavoritesModel>(context);
-    final size = MediaQuery.of(context).size;
+    final favorites = ref.watch(favoritesProvider);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -48,7 +47,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
               FadeInDown(
                 delay: const Duration(milliseconds: 200),
                 child: Text(
-                  favoritesModel.favorites.isEmpty
+                  favorites.isEmpty
                       ? "Добавьте места, которые вам нравятся"
                       : "Ваши любимые места",
                   style: TextStyle(
@@ -61,7 +60,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
               // Favorites List
               Expanded(
-                child: favoritesModel.favorites.isEmpty
+                child: favorites.isEmpty
                     ? Center(
                         child: FadeInUp(
                           delay: const Duration(milliseconds: 400),
@@ -78,7 +77,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                 "Нет избранных мест",
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                                  color: theme.textTheme.bodyMedium?.color
+                                      ?.withOpacity(0.5),
                                 ),
                               ),
                             ],
@@ -88,9 +88,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     : FadeInUp(
                         delay: const Duration(milliseconds: 400),
                         child: ListView.builder(
-                          itemCount: favoritesModel.favorites.length,
+                          itemCount: favorites.length,
                           itemBuilder: (context, index) {
-                            DataModel current = favoritesModel.favorites[index];
+                            DataModel current = favorites[index];
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16),
                               child: GestureDetector(
@@ -127,7 +127,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                             height: 200,
                                             decoration: BoxDecoration(
                                               image: DecorationImage(
-                                                image: AssetImage(current.image),
+                                                image:
+                                                    AssetImage(current.image),
                                                 fit: BoxFit.cover,
                                               ),
                                             ),
@@ -156,7 +157,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(16),
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   current.title,
@@ -170,7 +172,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                                 Row(
                                                   children: [
                                                     const Icon(
-                                                      Icons.location_on_outlined,
+                                                      Icons
+                                                          .location_on_outlined,
                                                       color: Colors.white70,
                                                       size: 16,
                                                     ),
@@ -194,7 +197,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                           right: 16,
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: Colors.white.withOpacity(0.9),
+                                              color:
+                                                  Colors.white.withOpacity(0.9),
                                               shape: BoxShape.circle,
                                             ),
                                             child: IconButton(
@@ -203,9 +207,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                                 color: Colors.red,
                                               ),
                                               onPressed: () {
-                                                setState(() {
-                                                  favoritesModel.remove(current);
-                                                });
+                                                ref.read(favoritesProvider.notifier).remove(current);
                                               },
                                             ),
                                           ),

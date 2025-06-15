@@ -20,7 +20,7 @@ class TabNavigationItem {
           icon: const Icon(Icons.favorite_border),
         ),
         TabNavigationItem(
-          page: const OurAiPage(),
+          page: const OurAi(),
           icon: const Icon(Icons.chat_bubble_outline_rounded),
         ),
         TabNavigationItem(

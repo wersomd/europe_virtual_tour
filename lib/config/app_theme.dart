@@ -4,76 +4,99 @@ import 'package:app/config/size_config.dart';
 final width = SizeConfig.screenW;
 
 ThemeData darkTheme = ThemeData(
+  useMaterial3: true,
   brightness: Brightness.dark,
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: Colors.blue,
+    brightness: Brightness.dark,
+  ),
   scaffoldBackgroundColor: Colors.grey.shade900,
-  primaryColor: Colors.black,
-  colorScheme: const ColorScheme.dark(),
-  iconTheme: const IconThemeData(color: Colors.white),
-  textTheme: const TextTheme(
-    bodyLarge: TextStyle(color: Colors.white),
-    bodyMedium: TextStyle(color: Colors.white),
-  ),
-  tabBarTheme: const TabBarTheme(
-    labelColor: Colors.white,
-    indicatorColor: Colors.white,
-    unselectedLabelColor: Colors.white,
-  ),
   appBarTheme: const AppBarTheme(
-    iconTheme: IconThemeData(
-      color: Colors.white,
+    centerTitle: true,
+    elevation: 0,
+  ),
+  cardTheme: CardThemeData(
+    elevation: 2,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
     ),
   ),
-  drawerTheme: const DrawerThemeData(
-    backgroundColor: Colors.black,
+  inputDecorationTheme: InputDecorationTheme(
+    filled: true,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide.none,
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide.none,
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Colors.blue, width: 2),
+    ),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-      shape: const RoundedRectangleBorder(
-        side: BorderSide(
-          width: 2,
-          color: Colors.white,
-        ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
       ),
+    ),
+  ),
+  drawerTheme: DrawerThemeData(
+    backgroundColor: Colors.grey.shade900,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.horizontal(right: Radius.circular(16)),
     ),
   ),
 );
 
 ThemeData lightTheme = ThemeData(
+  useMaterial3: true,
   brightness: Brightness.light,
-  scaffoldBackgroundColor: Colors.white,
-  primaryColor: Colors.white,
-  colorScheme: const ColorScheme.light(),
-  iconTheme: const IconThemeData(color: Colors.indigo),
-  textTheme: const TextTheme(
-    bodyLarge: TextStyle(color: Colors.black),
-    bodyMedium: TextStyle(color: Colors.black),
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: Colors.blue,
+    brightness: Brightness.light,
   ),
+  scaffoldBackgroundColor: Colors.white,
   appBarTheme: const AppBarTheme(
-    iconTheme: IconThemeData(
-      color: Colors.black,
+    centerTitle: true,
+    elevation: 0,
+  ),
+  cardTheme: CardThemeData(
+    elevation: 2,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
     ),
   ),
-  indicatorColor: Colors.deepPurpleAccent,
-  drawerTheme: const DrawerThemeData(
-    backgroundColor: Colors.indigo,
+  inputDecorationTheme: InputDecorationTheme(
+    filled: true,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide.none,
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide.none,
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Colors.blue, width: 2),
+    ),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      shape: const RoundedRectangleBorder(
-        side: BorderSide(
-          width: 2,
-          color: Colors.black,
-        ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
       ),
+    ),
+  ),
+  drawerTheme: const DrawerThemeData(
+    backgroundColor: Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.horizontal(right: Radius.circular(16)),
     ),
   ),
 );

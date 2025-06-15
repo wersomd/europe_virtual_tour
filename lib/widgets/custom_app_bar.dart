@@ -1,9 +1,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:app/provider/theme_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:app/providers/theme_provider.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const CustomAppBar({
@@ -15,20 +15,20 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + 10);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final isLightTheme = !Provider.of<ThemeProvider>(context).isDarkMode;
+    final colorScheme = theme.colorScheme;
+    final isDarkMode = ref.watch(themeProvider) == ThemeMode.dark;
 
     return FadeInUp(
       child: AppBar(
-        backgroundColor: isLightTheme ? Colors.white : Colors.transparent,
-        elevation: isLightTheme ? 1 : 0,
+        backgroundColor: theme.colorScheme.surface,
+        elevation: 0,
         centerTitle: true,
         title: Text(
           'Europe Virtual Tour',
-          style: TextStyle(
-            fontSize: 20,
-            color: isLightTheme ? Colors.black : theme.textTheme.bodyLarge!.color,
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: colorScheme.onSurface,
             letterSpacing: 0.53,
             fontWeight: FontWeight.bold,
           ),
@@ -43,22 +43,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
           icon: Icon(
             Icons.subject,
-            color: isLightTheme ? Colors.black : theme.appBarTheme.iconTheme?.color,
+            color: colorScheme.onSurface,
             size: 34,
           ),
         ),
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+              ref.read(themeProvider.notifier).toggleTheme();
             },
-            icon: Consumer<ThemeProvider>(
-              builder: (context, themeProvider, child) {
-                return Icon(
-                  themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                  color: isLightTheme ? Colors.black : null,
-                );
-              },
+            icon: Icon(
+              isDarkMode ? Icons.light_mode : Icons.dark_mode,
+              color: colorScheme.onSurface,
             ),
           ),
         ],
